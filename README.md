@@ -11,3 +11,8 @@ Usage:
 ```
     $ <script> <input_file> [output_file]
 ```
+
+Requires:
+- Python2 or Python3
+- matplotlib
+- numpy
