@@ -20,11 +20,22 @@ from matplotlib.colors import ListedColormap
 
 import numpy as np
 
-PhaseDataStruct = namedtuple('PhaseDataStruct',
-                             'temperature pressure phase_name energy')
+PhaseDataStruct = namedtuple(
+    'PhaseDataStruct',
+    'temperature pressure phase_name energy'
+)
 
-PHASE_COLORS = ['red', 'blue', 'gray', 'brown', 'black', 'purple', 'orange',
-                'yellow', 'pink', 'green']
+PHASE_COLORS = [
+    '#EF5350', # red
+    '#64B5F6', # blue
+    '#E0E0E0', # grey
+    '#795548', # brown
+    '#7E57C2', # purple
+    '#FFB74D', # orange
+    '#FFF176', # yellow
+    '#F48FB1', # pink
+    '#66BB6A'  # green
+]
 
 
 def isclose(a, b, abs_tol=1.e-9):
@@ -68,10 +79,14 @@ def extract_phase_data_from_file(filename):
             if len(lineSplit) < 4:
                 continue
 
-            data.append(PhaseDataStruct(float(lineSplit[0]),  # Temperature
-                                        float(lineSplit[1]),  # Pressure
-                                        lineSplit[2],  # Phase name
-                                        float(lineSplit[3])))  # Energy
+            data.append(
+                PhaseDataStruct(
+                    float(lineSplit[0]),  # Temperature
+                    float(lineSplit[1]),  # Pressure
+                    lineSplit[2],  # Phase name
+                    float(lineSplit[3])  # Energy
+                )
+            )
 
     return data
 
@@ -117,8 +132,10 @@ def generate_phase_diagram(input_file, output_file):
     # Make sure we are below the number of max phases
     max_phases = len(PHASE_COLORS)
     if len(phase_names) > max_phases:
-        raise ValueError('There is currently a maximum of ' +
-                         str(max_phases) + ' phases on a single diagram')
+        raise ValueError(
+            'There is currently a maximum of ' +
+            str(max_phases) + ' phases on a single diagram'
+        )
 
     # Generate the imshow data by creating a 2D array of indices of
     # the phase names
@@ -165,8 +182,10 @@ def generate_phase_diagram(input_file, output_file):
     num_inner_points = len(plot_data[0])
     for entry in plot_data:
         if len(entry) != num_inner_points:
-            raise ValueError('Inner lists (varying pressure) must be '
-                             'equal in size!')
+            raise ValueError(
+                'Inner lists (varying pressure) must be ' +
+                'equal in size!'
+            )
 
     # Turn our data into a numpy array
     # A little manipulation is required to orient the plot correctly...
@@ -180,7 +199,7 @@ def generate_phase_diagram(input_file, output_file):
 
     # For the legend
     custom_lines = []
-    for i, phase_name in enumerate(phase_names):
+    for i, _ in enumerate(phase_names):
         custom_lines.append(Line2D([0], [0], color=colors[i], lw=4))
 
     # Label the axes
@@ -189,10 +208,13 @@ def generate_phase_diagram(input_file, output_file):
     plt.legend(custom_lines, phase_names, loc='upper right')
     plt.title('Phase Diagram')
 
-    plt.imshow(plot_data, interpolation='nearest', cmap=cmap,
-               extent=[min_temperature, max_temperature,
-                       min_pressure, max_pressure],
-               aspect='auto')
+    plt.imshow(
+        plot_data,
+        interpolation='nearest',
+        cmap=cmap,
+        extent=[min_temperature, max_temperature, min_pressure, max_pressure],
+        aspect='auto'
+    )
 
     plt.draw()
     plt.savefig(output_file, dpi=400)
